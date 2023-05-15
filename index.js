@@ -11,8 +11,8 @@ app.use(express.json())
 
 
 
-app.get('/', (req, res)=> {
-    res.send('ema john online store is open')
+app.get('/', (req, res) => {
+  res.send('ema john online store is open')
 })
 
 
@@ -30,18 +30,28 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
 
-    const emajohnDB = client.db('ema-john-DB') 
-    const productsCollection = emajohnDB.collection('products-collection') 
+    const emajohnDB = client.db('ema-john-DB')
+    const productsCollection = emajohnDB.collection('products-collection')
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
-    app.get('/products', async(req, res)=> {
+    app.get('/products', async (req, res) => {
+      const currentPage = parseInt(req.query.currentPage) || 1
+      const limit = parseInt(req.query.limit) || 10
+      // console.log(req.query);
+      // const result = await productsCollection.find({}).toArray()
+      // console.log(req.query)
+      if(!Object.keys(req.query).length){
         const result = await productsCollection.find({}).toArray()
         res.send(result)
+        return
+      }
+      const result = await productsCollection.find({}).skip(currentPage*limit).limit(limit).toArray()
+      res.send(result)
     })
   } finally {
     // Ensures that the client will close when you finish/error
@@ -52,6 +62,6 @@ run().catch(console.dir);
 
 
 
-app.listen(port, ()=>{
-    console.log('ema john server is running');
+app.listen(port, () => {
+  console.log('ema john server is running');
 })
