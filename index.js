@@ -40,8 +40,8 @@ async function run() {
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
     app.get('/products', async (req, res) => {
-      const currentPage = parseInt(req.query.currentPage) || 1
-      const limit = parseInt(req.query.limit) || 10
+      const currentPage = parseInt(req.query.currentPage) || 0
+      const limit = parseInt(req.query.limit) || 15
       // console.log(req.query);
       // const result = await productsCollection.find({}).toArray()
       // console.log(req.query)
